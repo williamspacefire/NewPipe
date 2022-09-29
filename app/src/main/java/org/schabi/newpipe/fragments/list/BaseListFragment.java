@@ -26,6 +26,7 @@ import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
 import org.schabi.newpipe.fragments.BaseStateFragment;
 import org.schabi.newpipe.fragments.OnScrollBelowItemsListener;
+import org.schabi.newpipe.fragments.list.comments.CommentReplyDialog;
 import org.schabi.newpipe.info_list.InfoListAdapter;
 import org.schabi.newpipe.info_list.dialog.InfoItemDialog;
 import org.schabi.newpipe.util.NavigationHelper;
@@ -282,6 +283,15 @@ public abstract class BaseListFragment<I, N> extends BaseStateFragment<I>
         });
 
         infoListAdapter.setOnCommentsSelectedListener(this::onItemSelected);
+
+        infoListAdapter.setOnCommentsReplyListener(selectedItem -> {
+            try {
+                onItemSelected(selectedItem);
+                CommentReplyDialog.show(getFM(), selectedItem);
+            } catch (final Exception e) {
+                ErrorUtil.showUiErrorSnackbar(this, "Opening comment reply fragment", e);
+            }
+        });
 
         // Ensure that there is always a scroll listener (e.g. when rotating the device)
         useNormalItemListScrollListener();
